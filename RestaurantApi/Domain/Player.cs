@@ -1,6 +1,6 @@
 namespace RestaurantApi.Domain;
 
-public class Player
+public class Player : IAuditable
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
@@ -15,6 +15,9 @@ public class Player
     public string Email { get; set; } = string.Empty;
     public string DriversLicense { get; set; } = string.Empty;
     public string Passport { get; set; } = string.Empty;
+
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     public ICollection<Membership> Memberships { get; set; } = new List<Membership>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();

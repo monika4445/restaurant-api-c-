@@ -59,7 +59,9 @@ public class FavoriteService : IFavoriteService
         {
             Id = favorite.Id,
             PlayerId = favorite.PlayerId,
-            RestaurantId = favorite.RestaurantId
+            RestaurantId = favorite.RestaurantId,
+            CreatedAt = favorite.CreatedAt,
+            UpdatedAt = favorite.UpdatedAt
         };
     }
 

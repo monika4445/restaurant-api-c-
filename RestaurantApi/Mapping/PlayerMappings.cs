@@ -53,7 +53,9 @@ public static class PlayerMappings
         MobileNumber = player.MobileNumber,
         Email = player.Email,
         DriversLicense = player.DriversLicense,
-        Passport = player.Passport
+        Passport = player.Passport,
+        CreatedAt = player.CreatedAt,
+        UpdatedAt = player.UpdatedAt
     };
 
     public static PlayerMembershipsResponse ToMembershipsResponse(this Player player, IReadOnlyCollection<Guid> favoriteRestaurantIds) => new()
@@ -69,6 +71,8 @@ public static class PlayerMappings
         Email = player.Email,
         DriversLicense = player.DriversLicense,
         Passport = player.Passport,
+        CreatedAt = player.CreatedAt,
+        UpdatedAt = player.UpdatedAt,
         Restaurants = player.Memberships.Select(m => new RestaurantInMembershipResponse
         {
             Id = m.Restaurant.Id,
@@ -76,6 +80,8 @@ public static class PlayerMappings
             Address = m.Restaurant.Address,
             ContactNumber = m.Restaurant.ContactNumber,
             HoursOfOperation = m.Restaurant.HoursOfOperation,
+            CreatedAt = m.Restaurant.CreatedAt,
+            UpdatedAt = m.Restaurant.UpdatedAt,
             IsFavoriteRestaurant = favoriteRestaurantIds.Contains(m.RestaurantId)
         }).ToList()
     };
@@ -93,6 +99,8 @@ public static class PlayerMappings
         Email = player.Email,
         DriversLicense = player.DriversLicense,
         Passport = player.Passport,
+        CreatedAt = player.CreatedAt,
+        UpdatedAt = player.UpdatedAt,
         Restaurants = player.Favorites.Select(f => new RestaurantInFavoritesResponse
         {
             Id = f.Restaurant.Id,
@@ -100,6 +108,8 @@ public static class PlayerMappings
             Address = f.Restaurant.Address,
             ContactNumber = f.Restaurant.ContactNumber,
             HoursOfOperation = f.Restaurant.HoursOfOperation,
+            CreatedAt = f.Restaurant.CreatedAt,
+            UpdatedAt = f.Restaurant.UpdatedAt,
             Linked = membershipRestaurantIds.Contains(f.RestaurantId)
         }).ToList()
     };

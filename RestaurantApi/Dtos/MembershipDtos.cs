@@ -25,6 +25,8 @@ public class MembershipResponse
     public Guid Id { get; set; }
     public Guid PlayerId { get; set; }
     public Guid RestaurantId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class FavoriteResponse
@@ -32,4 +34,6 @@ public class FavoriteResponse
     public Guid Id { get; set; }
     public Guid PlayerId { get; set; }
     public Guid RestaurantId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

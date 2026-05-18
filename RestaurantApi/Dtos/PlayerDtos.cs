@@ -48,6 +48,8 @@ public class PlayerResponse
     public string Email { get; set; } = string.Empty;
     public string DriversLicense { get; set; } = string.Empty;
     public string Passport { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class PlayerMembershipsResponse : PlayerResponse

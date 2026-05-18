@@ -19,6 +19,8 @@ public static class RestaurantMappings
         Name = restaurant.Name,
         Address = restaurant.Address,
         ContactNumber = restaurant.ContactNumber,
-        HoursOfOperation = restaurant.HoursOfOperation
+        HoursOfOperation = restaurant.HoursOfOperation,
+        CreatedAt = restaurant.CreatedAt,
+        UpdatedAt = restaurant.UpdatedAt
     };
 }

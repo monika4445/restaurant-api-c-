@@ -59,7 +59,9 @@ public class MembershipService : IMembershipService
         {
             Id = membership.Id,
             PlayerId = membership.PlayerId,
-            RestaurantId = membership.RestaurantId
+            RestaurantId = membership.RestaurantId,
+            CreatedAt = membership.CreatedAt,
+            UpdatedAt = membership.UpdatedAt
         };
     }
 
