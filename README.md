@@ -45,6 +45,40 @@ The console will print the URL the app is listening on (e.g. `http://localhost:5
 ### After hosting
 Once deployed (see Deployment below), Swagger UI is served at the same path on the public URL: `https://<your-host>/swagger`. The `.http` file also works against the hosted URL — just change the `@host` variable at the top.
 
+### Run the test suite
+
+```sh
+dotnet test
+```
+
+Expected: **14 passed, 2 skipped**. The skipped tests use Postgres-specific `ILike`, which the in-memory test database doesn't implement — they are documented as such.
+
+### Verification checklist (5-minute walkthrough)
+
+Open Swagger UI and click through these in order. Each row is one edge case worth verifying.
+
+| # | Endpoint | Input | Expected |
+|---|---|---|---|
+| 1  | POST `/api/restaurants` | valid body | **201** + `createdAt` populated |
+| 2  | POST `/api/restaurants` | same body again | **409** with friendly message |
+| 3  | POST `/api/restaurants` | UPPERCASE name, same address | **409** (case-insensitive duplicate) |
+| 4  | POST `/api/restaurants` | empty strings | **400** with field-level errors |
+| 5  | POST `/api/players` | valid body | **201** |
+| 6  | POST `/api/players` | `dob: "2099-01-01"` | **400** "Date of birth cannot be in the future" |
+| 7  | POST `/api/players` | same email different case | **409** |
+| 8  | POST `/api/memberships` | `playerId` = empty Guid | **404** "Player not found" |
+| 9  | POST `/api/memberships` | valid player + restaurant | **201** |
+| 10 | POST `/api/memberships` | same pair again | **409** "already a member" |
+| 11 | POST `/api/favorites` | same pair | **201** (favorites are independent of membership) |
+| 12 | GET  `/api/restaurants?name=es` | partial substring | matching restaurants |
+| 13 | GET  `/api/restaurants?name=` | empty | **400** "name is required" |
+| 14 | GET  `/api/players?firstName=ad` | partial first name | matching players |
+| 15 | GET  `/api/memberships?firstName=…&lastName=…` | exact match | restaurants with `isFavoriteRestaurant` flag |
+| 16 | GET  `/api/favorites?firstName=…&lastName=…` | exact match | restaurants with `linked` flag |
+| 17 | GET  `/api/restaurants/members?name=…&age=18` | partial + age | `playersAgedAtLeastCount` per restaurant |
+| 18 | GET  `/api/restaurants/members?name=…&age=-1` | negative age | **400** |
+| 19 | GET  `/health` | — | **200** "Healthy" |
+
 ## Deployment (Render, free tier)
 
 1. Push the repo to GitHub (already done if you're reading this).
