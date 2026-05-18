@@ -79,4 +79,28 @@ public static class PlayerMappings
             IsFavoriteRestaurant = favoriteRestaurantIds.Contains(m.RestaurantId)
         }).ToList()
     };
+
+    public static PlayerFavoritesResponse ToFavoritesResponse(this Player player, IReadOnlyCollection<Guid> membershipRestaurantIds) => new()
+    {
+        Id = player.Id,
+        FirstName = player.FirstName,
+        LastName = player.LastName,
+        Dob = player.Dob,
+        PrimaryAddress = player.PrimaryAddress.ToDto(),
+        AlternateAddress = player.AlternateAddress.ToDto(),
+        OfficeAddress = player.OfficeAddress.ToDto(),
+        MobileNumber = player.MobileNumber,
+        Email = player.Email,
+        DriversLicense = player.DriversLicense,
+        Passport = player.Passport,
+        Restaurants = player.Favorites.Select(f => new RestaurantInFavoritesResponse
+        {
+            Id = f.Restaurant.Id,
+            Name = f.Restaurant.Name,
+            Address = f.Restaurant.Address,
+            ContactNumber = f.Restaurant.ContactNumber,
+            HoursOfOperation = f.Restaurant.HoursOfOperation,
+            Linked = membershipRestaurantIds.Contains(f.RestaurantId)
+        }).ToList()
+    };
 }
