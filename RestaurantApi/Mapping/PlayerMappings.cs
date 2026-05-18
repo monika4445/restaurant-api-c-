@@ -55,4 +55,28 @@ public static class PlayerMappings
         DriversLicense = player.DriversLicense,
         Passport = player.Passport
     };
+
+    public static PlayerMembershipsResponse ToMembershipsResponse(this Player player, IReadOnlyCollection<Guid> favoriteRestaurantIds) => new()
+    {
+        Id = player.Id,
+        FirstName = player.FirstName,
+        LastName = player.LastName,
+        Dob = player.Dob,
+        PrimaryAddress = player.PrimaryAddress.ToDto(),
+        AlternateAddress = player.AlternateAddress.ToDto(),
+        OfficeAddress = player.OfficeAddress.ToDto(),
+        MobileNumber = player.MobileNumber,
+        Email = player.Email,
+        DriversLicense = player.DriversLicense,
+        Passport = player.Passport,
+        Restaurants = player.Memberships.Select(m => new RestaurantInMembershipResponse
+        {
+            Id = m.Restaurant.Id,
+            Name = m.Restaurant.Name,
+            Address = m.Restaurant.Address,
+            ContactNumber = m.Restaurant.ContactNumber,
+            HoursOfOperation = m.Restaurant.HoursOfOperation,
+            IsFavoriteRestaurant = favoriteRestaurantIds.Contains(m.RestaurantId)
+        }).ToList()
+    };
 }

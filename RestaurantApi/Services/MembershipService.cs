@@ -3,6 +3,7 @@ using RestaurantApi.Data;
 using RestaurantApi.Domain;
 using RestaurantApi.Dtos;
 using RestaurantApi.Exceptions;
+using RestaurantApi.Mapping;
 
 namespace RestaurantApi.Services;
 
@@ -60,5 +61,23 @@ public class MembershipService : IMembershipService
             PlayerId = membership.PlayerId,
             RestaurantId = membership.RestaurantId
         };
+    }
+
+    public async Task<IReadOnlyList<PlayerMembershipsResponse>> GetByPlayerNameAsync(string firstName, string lastName, CancellationToken cancellationToken)
+    {
+        var fn = firstName.Trim();
+        var ln = lastName.Trim();
+
+        var players = await _db.Players
+            .Where(p => p.FirstName.ToLower() == fn.ToLower() && p.LastName.ToLower() == ln.ToLower())
+            .Include(p => p.Memberships)
+                .ThenInclude(m => m.Restaurant)
+            .Include(p => p.Favorites)
+            .AsSplitQuery()
+            .ToListAsync(cancellationToken);
+
+        return players
+            .Select(p => p.ToMembershipsResponse(p.Favorites.Select(f => f.RestaurantId).ToHashSet()))
+            .ToList();
     }
 }
