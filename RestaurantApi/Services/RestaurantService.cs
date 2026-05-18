@@ -55,4 +55,29 @@ public class RestaurantService : IRestaurantService
 
         return results.Select(r => r.ToResponse()).ToList();
     }
+
+    public async Task<IReadOnlyList<RestaurantWithMemberCountResponse>> GetMembersAgedAsync(string name, int age, CancellationToken cancellationToken)
+    {
+        if (age < 0)
+        {
+            throw new ValidationException("Age must be non-negative.");
+        }
+
+        var threshold = DateOnly.FromDateTime(DateTime.UtcNow).AddYears(-age);
+        var pattern = $"%{name.Trim()}%";
+
+        return await _db.Restaurants
+            .Where(r => EF.Functions.ILike(r.Name, pattern))
+            .OrderBy(r => r.Name)
+            .Select(r => new RestaurantWithMemberCountResponse
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Address = r.Address,
+                ContactNumber = r.ContactNumber,
+                HoursOfOperation = r.HoursOfOperation,
+                PlayersOverAgeCount = r.Memberships.Count(m => m.Player.Dob <= threshold)
+            })
+            .ToListAsync(cancellationToken);
+    }
 }
