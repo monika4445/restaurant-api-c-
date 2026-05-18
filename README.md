@@ -43,7 +43,27 @@ The console will print the URL the app is listening on (e.g. `http://localhost:5
 - **`.http` file** — open `RestaurantApi.http` in VS Code (REST Client extension) or JetBrains Rider and click *Send Request*. Requests are chained: creating a restaurant + player + membership flows the IDs into subsequent calls.
 
 ### After hosting
-Once deployed (Azure App Service, Render, Fly.io, etc.), Swagger UI is served at the same path on the public URL: `https://<your-host>/swagger`. The `.http` file also works against the hosted URL — just change the `@host` variable at the top.
+Once deployed (see Deployment below), Swagger UI is served at the same path on the public URL: `https://<your-host>/swagger`. The `.http` file also works against the hosted URL — just change the `@host` variable at the top.
+
+## Deployment (Render, free tier)
+
+1. Push the repo to GitHub (already done if you're reading this).
+2. Sign up at https://render.com and connect your GitHub account.
+3. **New → Web Service** → pick this repo.
+4. Configure:
+   - **Environment**: Docker
+   - **Region**: closest to you
+   - **Instance type**: Free
+   - **Health check path**: `/health`
+5. Under **Environment variables**, add:
+   - `ConnectionStrings__Default` = your Supabase **session-pooler** connection string (the same one used locally — see Setup above).
+6. Click **Create Web Service**. Render will build the Dockerfile and deploy. First build takes ~3–5 min.
+7. Once live, your API is at `https://<service-name>.onrender.com`. Swagger UI: `https://<service-name>.onrender.com/swagger`.
+
+**Notes**
+- Render's free tier spins down after 15 min of inactivity. First request after spin-down takes ~30s (cold start). For an assessment demo this is fine.
+- `PORT` is injected by Render; the app honors it (`Program.cs`).
+- Migrations: Render won't run them automatically. Either run `dotnet ef database update` against the production DB once from your machine, or temporarily add `Database.Migrate()` in `Program.cs`.
 
 ## Endpoints
 

@@ -36,6 +36,13 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    app.Urls.Clear();
+    app.Urls.Add($"http://+:{port}");
+}
+
 app.UseExceptionHandler();
 
 app.UseSwagger();
