@@ -76,7 +76,7 @@ public class RestaurantService : IRestaurantService
                 Address = r.Address,
                 ContactNumber = r.ContactNumber,
                 HoursOfOperation = r.HoursOfOperation,
-                PlayersOverAgeCount = r.Memberships.Count(m => m.Player.Dob <= threshold)
+                PlayersAgedAtLeastCount = r.Memberships.Count(m => m.Player.Dob <= threshold)
             })
             .ToListAsync(cancellationToken);
     }

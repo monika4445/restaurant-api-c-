@@ -28,5 +28,5 @@ public class RestaurantResponse
 
 public class RestaurantWithMemberCountResponse : RestaurantResponse
 {
-    public int PlayersOverAgeCount { get; set; }
+    public int PlayersAgedAtLeastCount { get; set; }
 }
