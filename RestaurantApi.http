@@ -32,7 +32,7 @@ Content-Type: application/json
   "hoursOfOperation": "Mon-Sun 9-21"
 }
 
-### 1c. Create restaurant with case-different name (409 conflict)
+### 1c. Same Name+Address pair, different case (409 conflict)
 POST {{host}}/api/restaurants
 Content-Type: application/json
 
@@ -224,7 +224,7 @@ GET {{host}}/api/favorites?firstName=Ada&lastName=Lovelace
 ### 10. Restaurant members aged >= X (partial name + age)
 GET {{host}}/api/restaurants/members?name=sample&age=18
 
-### 10b. Higher threshold → playersOverAgeCount drops
+### 10b. Higher threshold → playersAgedAtLeastCount drops
 GET {{host}}/api/restaurants/members?name=sample&age=99
 
 ### 10c. Negative age → 400

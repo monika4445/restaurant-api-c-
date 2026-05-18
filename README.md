@@ -1,6 +1,6 @@
 # RestaurantApi
 
-ASP.NET Core Web API (.NET 8+) backed by PostgreSQL (Supabase) via Entity Framework Core.
+ASP.NET Core Web API (.NET 10) backed by PostgreSQL (Supabase) via Entity Framework Core.
 
 ## Entities
 
@@ -12,7 +12,7 @@ ASP.NET Core Web API (.NET 8+) backed by PostgreSQL (Supabase) via Entity Framew
 
 ## Setup
 
-Requires **.NET SDK 8 or higher** (`dotnet --version`). Developed on .NET 10.
+Requires **.NET SDK 10** (`dotnet --version`).
 
 ```sh
 # Once per machine — install the EF Core CLI tool
