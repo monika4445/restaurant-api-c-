@@ -1,0 +1,231 @@
+### RestaurantApi — ready-to-run requests
+### Works in VS Code (REST Client extension) and JetBrains Rider HTTP Client.
+### Change @host to your deployed URL to test against a hosted instance.
+
+@host = http://localhost:5099
+
+
+###############################################
+### SAVE ENDPOINTS
+###############################################
+
+### 1. Create restaurant (201)
+# @name createRestaurant
+POST {{host}}/api/restaurants
+Content-Type: application/json
+
+{
+  "name": "Sample Diner",
+  "address": "1 Main St",
+  "contactNumber": "+1-555-0100",
+  "hoursOfOperation": "Mon-Sun 9-21"
+}
+
+### 1b. Create same restaurant again (409 conflict)
+POST {{host}}/api/restaurants
+Content-Type: application/json
+
+{
+  "name": "Sample Diner",
+  "address": "1 Main St",
+  "contactNumber": "+1-555-0100",
+  "hoursOfOperation": "Mon-Sun 9-21"
+}
+
+### 1c. Create restaurant with case-different name (409 conflict)
+POST {{host}}/api/restaurants
+Content-Type: application/json
+
+{
+  "name": "SAMPLE DINER",
+  "address": "1 Main St",
+  "contactNumber": "+1-555-0100",
+  "hoursOfOperation": "Mon-Sun 9-21"
+}
+
+### 1d. Create with missing fields (400 validation)
+POST {{host}}/api/restaurants
+Content-Type: application/json
+
+{
+  "name": "",
+  "address": "",
+  "contactNumber": "",
+  "hoursOfOperation": ""
+}
+
+### 2. Create a second restaurant (used later for favorites-without-membership)
+# @name createRestaurant2
+POST {{host}}/api/restaurants
+Content-Type: application/json
+
+{
+  "name": "Pasta Place",
+  "address": "7 Rome Ave",
+  "contactNumber": "+1-555-0300",
+  "hoursOfOperation": "Mon-Sun 11-22"
+}
+
+### 3. Create player (201)
+# @name createPlayer
+POST {{host}}/api/players
+Content-Type: application/json
+
+{
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "dob": "1990-12-10",
+  "primaryAddress": {
+    "streetNumber": "12", "line1": "Sample St", "line2": null,
+    "city": "Yerevan", "state": "YR", "postal": "0010", "country": "AM"
+  },
+  "alternateAddress": {
+    "streetNumber": "12", "line1": "Sample St", "line2": null,
+    "city": "Yerevan", "state": "YR", "postal": "0010", "country": "AM"
+  },
+  "officeAddress": {
+    "streetNumber": "12", "line1": "Sample St", "line2": null,
+    "city": "Yerevan", "state": "YR", "postal": "0010", "country": "AM"
+  },
+  "mobileNumber": "+374-99-111-111",
+  "email": "ada@example.com",
+  "driversLicense": "DL-12345",
+  "passport": "PA-98765"
+}
+
+### 3b. Create player with same email (case-different) → 409
+POST {{host}}/api/players
+Content-Type: application/json
+
+{
+  "firstName": "Other",
+  "lastName": "Person",
+  "dob": "1985-01-01",
+  "primaryAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "alternateAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "officeAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "mobileNumber": "+374-99-222-222",
+  "email": "ADA@example.com",
+  "driversLicense": "DL-OTHER",
+  "passport": "PA-OTHER"
+}
+
+### 3c. Create player with future DOB → 400
+POST {{host}}/api/players
+Content-Type: application/json
+
+{
+  "firstName": "Future",
+  "lastName": "Person",
+  "dob": "2099-01-01",
+  "primaryAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "alternateAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "officeAddress": {
+    "streetNumber": "1", "line1": "X St", "line2": null,
+    "city": "Y", "state": "Z", "postal": "00000", "country": "AM"
+  },
+  "mobileNumber": "+1-555-9999",
+  "email": "future@example.com",
+  "driversLicense": "DL-NEW1",
+  "passport": "PA-NEW1"
+}
+
+### 4. Create membership (201) — references created restaurant + player
+POST {{host}}/api/memberships
+Content-Type: application/json
+
+{
+  "playerId": "{{createPlayer.response.body.id}}",
+  "restaurantId": "{{createRestaurant.response.body.id}}"
+}
+
+### 4b. Duplicate membership → 409
+POST {{host}}/api/memberships
+Content-Type: application/json
+
+{
+  "playerId": "{{createPlayer.response.body.id}}",
+  "restaurantId": "{{createRestaurant.response.body.id}}"
+}
+
+### 4c. Membership with non-existent player → 404
+POST {{host}}/api/memberships
+Content-Type: application/json
+
+{
+  "playerId": "00000000-0000-0000-0000-000000000000",
+  "restaurantId": "{{createRestaurant.response.body.id}}"
+}
+
+### 5. Create favorite that is ALSO a membership → linked:true later
+POST {{host}}/api/favorites
+Content-Type: application/json
+
+{
+  "playerId": "{{createPlayer.response.body.id}}",
+  "restaurantId": "{{createRestaurant.response.body.id}}"
+}
+
+### 5b. Create favorite that is NOT a membership → linked:false later
+POST {{host}}/api/favorites
+Content-Type: application/json
+
+{
+  "playerId": "{{createPlayer.response.body.id}}",
+  "restaurantId": "{{createRestaurant2.response.body.id}}"
+}
+
+
+###############################################
+### RETRIEVE ENDPOINTS
+###############################################
+
+### 6. Search restaurants by partial name (case-insensitive)
+GET {{host}}/api/restaurants?name=sample
+
+### 6b. Empty result → 200 []
+GET {{host}}/api/restaurants?name=zzznomatch
+
+### 6c. Missing name param → 400
+GET {{host}}/api/restaurants
+
+### 7. Search players by partial first/last name
+GET {{host}}/api/players?firstName=ad&lastName=lov
+
+### 7b. Only firstName provided
+GET {{host}}/api/players?firstName=ad
+
+### 7c. Neither provided → 400
+GET {{host}}/api/players
+
+### 8. Get player memberships (exact name) — restaurants carry isFavoriteRestaurant flag
+GET {{host}}/api/memberships?firstName=Ada&lastName=Lovelace
+
+### 9. Get player favorites (exact name) — restaurants carry linked flag
+###     Curry-/Sample-side restaurant should have linked:true (it's also a membership)
+###     Pasta Place should have linked:false (favorite only, not a member)
+GET {{host}}/api/favorites?firstName=Ada&lastName=Lovelace
+
+### 10. Restaurant members aged >= X (partial name + age)
+GET {{host}}/api/restaurants/members?name=sample&age=18
+
+### 10b. Higher threshold → playersOverAgeCount drops
+GET {{host}}/api/restaurants/members?name=sample&age=99
+
+### 10c. Negative age → 400
+GET {{host}}/api/restaurants/members?name=sample&age=-1
