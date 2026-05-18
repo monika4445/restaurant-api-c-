@@ -1,5 +1,7 @@
 # RestaurantApi
 
+![CI](https://github.com/monika4445/restaurant-api-c-/actions/workflows/ci.yml/badge.svg)
+
 ASP.NET Core Web API (.NET 10) backed by PostgreSQL (Supabase) via Entity Framework Core.
 
 ## Entities
