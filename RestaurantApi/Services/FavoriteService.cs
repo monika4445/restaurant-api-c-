@@ -65,6 +65,11 @@ public class FavoriteService : IFavoriteService
 
     public async Task<IReadOnlyList<PlayerFavoritesResponse>> GetByPlayerNameAsync(string firstName, string lastName, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+        {
+            throw new ValidationException("firstName and lastName are required.");
+        }
+
         var fn = firstName.Trim();
         var ln = lastName.Trim();
 

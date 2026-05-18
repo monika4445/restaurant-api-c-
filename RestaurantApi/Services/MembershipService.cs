@@ -65,6 +65,11 @@ public class MembershipService : IMembershipService
 
     public async Task<IReadOnlyList<PlayerMembershipsResponse>> GetByPlayerNameAsync(string firstName, string lastName, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+        {
+            throw new ValidationException("firstName and lastName are required.");
+        }
+
         var fn = firstName.Trim();
         var ln = lastName.Trim();
 
