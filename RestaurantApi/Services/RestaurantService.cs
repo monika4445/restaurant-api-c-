@@ -44,4 +44,15 @@ public class RestaurantService : IRestaurantService
 
         return restaurant.ToResponse();
     }
+
+    public async Task<IReadOnlyList<RestaurantResponse>> SearchByNameAsync(string name, CancellationToken cancellationToken)
+    {
+        var pattern = $"%{name.Trim()}%";
+        var results = await _db.Restaurants
+            .Where(r => EF.Functions.ILike(r.Name, pattern))
+            .OrderBy(r => r.Name)
+            .ToListAsync(cancellationToken);
+
+        return results.Select(r => r.ToResponse()).ToList();
+    }
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantApi.Dtos;
 using RestaurantApi.Services;
@@ -25,5 +26,16 @@ public class RestaurantsController : ControllerBase
     {
         var response = await _service.CreateAsync(request, cancellationToken);
         return StatusCode(StatusCodes.Status201Created, response);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<RestaurantResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<RestaurantResponse>>> SearchByName(
+        [FromQuery, Required] string name,
+        CancellationToken cancellationToken)
+    {
+        var results = await _service.SearchByNameAsync(name, cancellationToken);
+        return Ok(results);
     }
 }
