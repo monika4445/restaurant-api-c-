@@ -26,4 +26,16 @@ public class PlayersController : ControllerBase
         var response = await _service.CreateAsync(request, cancellationToken);
         return StatusCode(StatusCodes.Status201Created, response);
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<PlayerResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<PlayerResponse>>> SearchByName(
+        [FromQuery] string? firstName,
+        [FromQuery] string? lastName,
+        CancellationToken cancellationToken)
+    {
+        var results = await _service.SearchByNameAsync(firstName, lastName, cancellationToken);
+        return Ok(results);
+    }
 }

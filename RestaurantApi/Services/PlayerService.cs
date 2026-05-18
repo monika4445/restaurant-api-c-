@@ -58,4 +58,33 @@ public class PlayerService : IPlayerService
 
         return player.ToResponse();
     }
+
+    public async Task<IReadOnlyList<PlayerResponse>> SearchByNameAsync(string? firstName, string? lastName, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName))
+        {
+            throw new ValidationException("Provide firstName or lastName.");
+        }
+
+        var query = _db.Players.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(firstName))
+        {
+            var pattern = $"%{firstName.Trim()}%";
+            query = query.Where(p => EF.Functions.ILike(p.FirstName, pattern));
+        }
+
+        if (!string.IsNullOrWhiteSpace(lastName))
+        {
+            var pattern = $"%{lastName.Trim()}%";
+            query = query.Where(p => EF.Functions.ILike(p.LastName, pattern));
+        }
+
+        var results = await query
+            .OrderBy(p => p.LastName)
+            .ThenBy(p => p.FirstName)
+            .ToListAsync(cancellationToken);
+
+        return results.Select(p => p.ToResponse()).ToList();
+    }
 }
