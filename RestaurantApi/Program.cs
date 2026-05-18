@@ -31,7 +31,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = "RestaurantApi", Version = "v1" });
+    options.SwaggerDoc("v1", new()
+    {
+        Title = "RestaurantApi",
+        Version = "v1",
+        Description = "Restaurants, Players, Memberships and Favorites. " +
+                      "Built on ASP.NET Core (.NET 10) with PostgreSQL via EF Core. " +
+                      "All save endpoints enforce duplicate detection (case-insensitive, race-safe). " +
+                      "Retrieve endpoints support partial search where the spec says so.",
+        Contact = new() { Name = "Source", Url = new Uri("https://github.com/monika4445/restaurant-api-c-") }
+    });
 });
 
 var app = builder.Build();

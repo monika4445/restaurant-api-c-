@@ -16,6 +16,7 @@ public class PlayersController : ControllerBase
     }
 
     [HttpPost]
+    [EndpointSummary("Save a player. Returns 409 on duplicate email, passport, or driver's license.")]
     [ProducesResponseType(typeof(PlayerResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -28,6 +29,7 @@ public class PlayersController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Partial, case-insensitive search by firstName / lastName (either or both).")]
     [ProducesResponseType(typeof(IReadOnlyList<PlayerResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<PlayerResponse>>> SearchByName(

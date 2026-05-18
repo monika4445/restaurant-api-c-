@@ -17,6 +17,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpPost]
+    [EndpointSummary("Save a restaurant. Returns 409 on duplicate Name+Address (case-insensitive).")]
     [ProducesResponseType(typeof(RestaurantResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -29,6 +30,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Partial, case-insensitive search by restaurant name.")]
     [ProducesResponseType(typeof(IReadOnlyList<RestaurantResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<RestaurantResponse>>> SearchByName(
@@ -40,6 +42,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet("members")]
+    [EndpointSummary("Restaurants matching name + count of members aged >= age.")]
     [ProducesResponseType(typeof(IReadOnlyList<RestaurantWithMemberCountResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<RestaurantWithMemberCountResponse>>> GetMembersAged(

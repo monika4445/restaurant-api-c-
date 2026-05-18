@@ -17,6 +17,7 @@ public class FavoritesController : ControllerBase
     }
 
     [HttpPost]
+    [EndpointSummary("Mark a restaurant as a player's favorite. 404 if either is missing, 409 on duplicate.")]
     [ProducesResponseType(typeof(FavoriteResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -30,6 +31,7 @@ public class FavoritesController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Player's favorites (exact name match). Each restaurant has 'linked' flag (= also a member).")]
     [ProducesResponseType(typeof(IReadOnlyList<PlayerFavoritesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<PlayerFavoritesResponse>>> GetByPlayerName(
