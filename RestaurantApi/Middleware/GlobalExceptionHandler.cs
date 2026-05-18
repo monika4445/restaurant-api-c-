@@ -49,6 +49,7 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         NotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
         ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+        ValidationException => (StatusCodes.Status400BadRequest, "Bad Request"),
         DbUpdateException dbEx when dbEx.InnerException is PostgresException pg
             && pg.SqlState == PostgresUniqueViolation
             => (StatusCodes.Status409Conflict, "Conflict"),
