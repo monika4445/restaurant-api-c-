@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantApi.Dtos;
@@ -5,12 +6,15 @@ namespace RestaurantApi.Dtos;
 public class CreatePlayerRequest
 {
     [Required, StringLength(100)]
+    [DefaultValue("Ada")]
     public string FirstName { get; set; } = string.Empty;
 
     [Required, StringLength(100)]
+    [DefaultValue("Lovelace")]
     public string LastName { get; set; } = string.Empty;
 
     [Required]
+    [DefaultValue("1990-12-10")]
     public DateOnly Dob { get; set; }
 
     [Required]
@@ -23,15 +27,19 @@ public class CreatePlayerRequest
     public AddressDto OfficeAddress { get; set; } = new();
 
     [Required, Phone, StringLength(50)]
+    [DefaultValue("+15550111111")]
     public string MobileNumber { get; set; } = string.Empty;
 
     [Required, EmailAddress, StringLength(200)]
+    [DefaultValue("ada@example.com")]
     public string Email { get; set; } = string.Empty;
 
     [Required, StringLength(50)]
+    [DefaultValue("DL-12345")]
     public string DriversLicense { get; set; } = string.Empty;
 
     [Required, StringLength(50)]
+    [DefaultValue("PA-98765")]
     public string Passport { get; set; } = string.Empty;
 }
 

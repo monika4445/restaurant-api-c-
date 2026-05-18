@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RestaurantApi.Configuration;
 using RestaurantApi.Data;
 using RestaurantApi.Middleware;
 using RestaurantApi.Services;
@@ -38,9 +39,12 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Restaurants, Players, Memberships and Favorites. " +
                       "Built on ASP.NET Core (.NET 10) with PostgreSQL via EF Core. " +
                       "All save endpoints enforce duplicate detection (case-insensitive, race-safe). " +
-                      "Retrieve endpoints support partial search where the spec says so.",
+                      "Retrieve endpoints support partial search where the spec says so. " +
+                      "\n\n**Tip:** every \"Try it out\" request body is pre-filled with valid sample values — " +
+                      "click Execute as-is for a happy-path 201. Modify any field to test invalid cases (400 / 409 / 404).",
         Contact = new() { Name = "Source", Url = new Uri("https://github.com/monika4445/restaurant-api-c-") }
     });
+    options.SchemaFilter<DefaultValueExampleFilter>();
 });
 
 var app = builder.Build();
