@@ -18,8 +18,9 @@ Requires **.NET SDK 8 or higher** (`dotnet --version`). Developed on .NET 10.
 # 1. set the Postgres connection string as a User Secret (not committed)
 dotnet user-secrets init --project RestaurantApi
 dotnet user-secrets set "ConnectionStrings:Default" \
-  "Host=db.<your-ref>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=<your-password>;SSL Mode=Require;Trust Server Certificate=true" \
+  "Host=aws-1-<region>.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.<your-ref>;Password=<your-password>;SSL Mode=Require;Trust Server Certificate=true" \
   --project RestaurantApi
+# Note: use the Supabase "Session pooler" string (IPv4). The "Direct" string is IPv6-only.
 
 # 2. apply migrations
 dotnet ef database update --project RestaurantApi
