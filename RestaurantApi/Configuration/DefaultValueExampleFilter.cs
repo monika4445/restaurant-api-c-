@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -18,7 +19,7 @@ public class DefaultValueExampleFilter : ISchemaFilter
             var attr = prop.GetCustomAttribute<DefaultValueAttribute>();
             if (attr?.Value is null) continue;
 
-            var name = char.ToLowerInvariant(prop.Name[0]) + prop.Name[1..];
+            var name = JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
             if (!concrete.Properties.TryGetValue(name, out var propSchema)) continue;
             if (propSchema is not OpenApiSchema concreteProp) continue;
 
