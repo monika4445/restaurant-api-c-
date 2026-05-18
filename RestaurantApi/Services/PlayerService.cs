@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using RestaurantApi.Data;
 using RestaurantApi.Dtos;
 using RestaurantApi.Exceptions;
@@ -9,7 +8,6 @@ namespace RestaurantApi.Services;
 
 public class PlayerService : IPlayerService
 {
-    private const string PostgresUniqueViolation = "23505";
     private readonly AppDbContext _db;
 
     public PlayerService(AppDbContext db)
@@ -53,7 +51,7 @@ public class PlayerService : IPlayerService
         {
             await _db.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException ex) when (ex.InnerException is PostgresException pg && pg.SqlState == PostgresUniqueViolation)
+        catch (DbUpdateException ex) when (ex.IsUniqueViolation())
         {
             throw new ConflictException("Player with the same email, passport, or driver's license already exists.");
         }

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using RestaurantApi.Data;
 using RestaurantApi.Dtos;
 using RestaurantApi.Exceptions;
@@ -9,7 +8,6 @@ namespace RestaurantApi.Services;
 
 public class RestaurantService : IRestaurantService
 {
-    private const string PostgresUniqueViolation = "23505";
     private readonly AppDbContext _db;
 
     public RestaurantService(AppDbContext db)
@@ -39,7 +37,7 @@ public class RestaurantService : IRestaurantService
         {
             await _db.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException ex) when (ex.InnerException is PostgresException pg && pg.SqlState == PostgresUniqueViolation)
+        catch (DbUpdateException ex) when (ex.IsUniqueViolation())
         {
             throw new ConflictException($"Restaurant '{name}' at '{address}' already exists.");
         }

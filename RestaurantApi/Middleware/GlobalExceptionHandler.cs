@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
+using RestaurantApi.Data;
 using RestaurantApi.Exceptions;
 
 namespace RestaurantApi.Middleware;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {
-    private const string PostgresUniqueViolation = "23505";
     private readonly ILogger<GlobalExceptionHandler> _logger;
 
     public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
@@ -50,8 +49,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         NotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
         ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
         ValidationException => (StatusCodes.Status400BadRequest, "Bad Request"),
-        DbUpdateException dbEx when dbEx.InnerException is PostgresException pg
-            && pg.SqlState == PostgresUniqueViolation
+        DbUpdateException dbEx when dbEx.IsUniqueViolation()
             => (StatusCodes.Status409Conflict, "Conflict"),
         _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
     };
