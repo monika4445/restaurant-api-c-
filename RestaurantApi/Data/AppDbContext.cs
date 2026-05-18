@@ -23,7 +23,6 @@ public class AppDbContext : DbContext
             b.Property(r => r.Address).IsRequired().HasMaxLength(500);
             b.Property(r => r.ContactNumber).IsRequired().HasMaxLength(50);
             b.Property(r => r.HoursOfOperation).IsRequired().HasMaxLength(200);
-            b.HasIndex(r => new { r.Name, r.Address }).IsUnique();
         });
 
         modelBuilder.Entity<Player>(b =>
@@ -36,9 +35,6 @@ public class AppDbContext : DbContext
             b.Property(p => p.DriversLicense).IsRequired().HasMaxLength(50);
             b.Property(p => p.Passport).IsRequired().HasMaxLength(50);
 
-            b.HasIndex(p => p.Email).IsUnique();
-            b.HasIndex(p => p.Passport).IsUnique();
-            b.HasIndex(p => p.DriversLicense).IsUnique();
 
             b.OwnsOne(p => p.PrimaryAddress, ConfigureAddress);
             b.OwnsOne(p => p.AlternateAddress, ConfigureAddress);
