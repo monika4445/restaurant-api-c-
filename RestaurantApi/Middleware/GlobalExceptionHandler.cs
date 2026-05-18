@@ -20,6 +20,12 @@ public class GlobalExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
+        if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
+        {
+            _logger.LogDebug("Request cancelled by client");
+            return true;
+        }
+
         var (status, title) = Map(exception);
 
         if (status >= 500)
