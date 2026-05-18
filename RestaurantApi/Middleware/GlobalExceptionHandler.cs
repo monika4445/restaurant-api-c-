@@ -1,0 +1,57 @@
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using RestaurantApi.Exceptions;
+
+namespace RestaurantApi.Middleware;
+
+public class GlobalExceptionHandler : IExceptionHandler
+{
+    private const string PostgresUniqueViolation = "23505";
+    private readonly ILogger<GlobalExceptionHandler> _logger;
+
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    {
+        _logger = logger;
+    }
+
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        var (status, title) = Map(exception);
+
+        if (status >= 500)
+        {
+            _logger.LogError(exception, "Unhandled exception");
+        }
+        else
+        {
+            _logger.LogWarning(exception, "Handled exception: {Title}", title);
+        }
+
+        var problem = new ProblemDetails
+        {
+            Status = status,
+            Title = title,
+            Detail = exception.Message,
+            Instance = httpContext.Request.Path
+        };
+
+        httpContext.Response.StatusCode = status;
+        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+        return true;
+    }
+
+    private static (int Status, string Title) Map(Exception ex) => ex switch
+    {
+        NotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
+        ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+        DbUpdateException dbEx when dbEx.InnerException is PostgresException pg
+            && pg.SqlState == PostgresUniqueViolation
+            => (StatusCodes.Status409Conflict, "Conflict"),
+        _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
+    };
+}
