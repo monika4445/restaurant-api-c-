@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantApi.Dtos;
@@ -34,7 +35,7 @@ public class RestaurantsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<RestaurantResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<RestaurantResponse>>> SearchByName(
-        [FromQuery, Required] string name,
+        [FromQuery, Required, DefaultValue("Sample")] string name,
         CancellationToken cancellationToken)
     {
         var results = await _service.SearchByNameAsync(name, cancellationToken);
@@ -46,8 +47,8 @@ public class RestaurantsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<RestaurantWithMemberCountResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<RestaurantWithMemberCountResponse>>> GetMembersAged(
-        [FromQuery, Required] string name,
-        [FromQuery, Required, Range(0, 150)] int age,
+        [FromQuery, Required, DefaultValue("Sample")] string name,
+        [FromQuery, Required, Range(0, 150), DefaultValue(18)] int age,
         CancellationToken cancellationToken)
     {
         var results = await _service.GetMembersAgedAsync(name, age, cancellationToken);

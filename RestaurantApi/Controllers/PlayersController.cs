@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantApi.Dtos;
 using RestaurantApi.Services;
@@ -33,8 +34,8 @@ public class PlayersController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<PlayerResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<PlayerResponse>>> SearchByName(
-        [FromQuery] string? firstName,
-        [FromQuery] string? lastName,
+        [FromQuery, DefaultValue("Ada")] string? firstName,
+        [FromQuery, DefaultValue("Lovelace")] string? lastName,
         CancellationToken cancellationToken)
     {
         var results = await _service.SearchByNameAsync(firstName, lastName, cancellationToken);

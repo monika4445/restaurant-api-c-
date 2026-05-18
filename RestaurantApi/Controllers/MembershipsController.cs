@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantApi.Dtos;
@@ -35,8 +36,8 @@ public class MembershipsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<PlayerMembershipsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<PlayerMembershipsResponse>>> GetByPlayerName(
-        [FromQuery, Required] string firstName,
-        [FromQuery, Required] string lastName,
+        [FromQuery, Required, DefaultValue("Ada")] string firstName,
+        [FromQuery, Required, DefaultValue("Lovelace")] string lastName,
         CancellationToken cancellationToken)
     {
         var results = await _service.GetByPlayerNameAsync(firstName, lastName, cancellationToken);

@@ -45,6 +45,7 @@ builder.Services.AddSwaggerGen(options =>
         Contact = new() { Name = "Source", Url = new Uri("https://github.com/monika4445/restaurant-api-c-") }
     });
     options.SchemaFilter<DefaultValueExampleFilter>();
+    options.ParameterFilter<DefaultValueParameterFilter>();
 });
 
 var app = builder.Build();
