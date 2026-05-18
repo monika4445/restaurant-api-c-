@@ -1,6 +1,6 @@
 namespace RestaurantApi.Services;
 
-internal static class SearchHelpers
+public static class SearchHelpers
 {
     public static string ToIlikePattern(string input)
     {
