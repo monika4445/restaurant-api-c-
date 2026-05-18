@@ -24,7 +24,7 @@ public class PlayersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _service.CreateAsync(request, cancellationToken);
-        return StatusCode(StatusCodes.Status201Created, response);
+        return Created($"/api/players/{response.Id}", response);
     }
 
     [HttpGet]

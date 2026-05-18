@@ -47,7 +47,12 @@ public class RestaurantService : IRestaurantService
 
     public async Task<IReadOnlyList<RestaurantResponse>> SearchByNameAsync(string name, CancellationToken cancellationToken)
     {
-        var pattern = $"%{name.Trim()}%";
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ValidationException("name is required.");
+        }
+
+        var pattern = SearchHelpers.ToIlikePattern(name);
         var results = await _db.Restaurants
             .Where(r => EF.Functions.ILike(r.Name, pattern))
             .OrderBy(r => r.Name)
@@ -63,8 +68,13 @@ public class RestaurantService : IRestaurantService
             throw new ValidationException("Age must be non-negative.");
         }
 
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ValidationException("name is required.");
+        }
+
         var threshold = DateOnly.FromDateTime(DateTime.UtcNow).AddYears(-age);
-        var pattern = $"%{name.Trim()}%";
+        var pattern = SearchHelpers.ToIlikePattern(name);
 
         return await _db.Restaurants
             .Where(r => EF.Functions.ILike(r.Name, pattern))

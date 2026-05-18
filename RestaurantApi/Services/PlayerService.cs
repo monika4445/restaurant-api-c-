@@ -70,13 +70,13 @@ public class PlayerService : IPlayerService
 
         if (!string.IsNullOrWhiteSpace(firstName))
         {
-            var pattern = $"%{firstName.Trim()}%";
+            var pattern = SearchHelpers.ToIlikePattern(firstName);
             query = query.Where(p => EF.Functions.ILike(p.FirstName, pattern));
         }
 
         if (!string.IsNullOrWhiteSpace(lastName))
         {
-            var pattern = $"%{lastName.Trim()}%";
+            var pattern = SearchHelpers.ToIlikePattern(lastName);
             query = query.Where(p => EF.Functions.ILike(p.LastName, pattern));
         }
 

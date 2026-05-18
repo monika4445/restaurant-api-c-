@@ -25,7 +25,7 @@ public class RestaurantsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _service.CreateAsync(request, cancellationToken);
-        return StatusCode(StatusCodes.Status201Created, response);
+        return Created($"/api/restaurants/{response.Id}", response);
     }
 
     [HttpGet]
